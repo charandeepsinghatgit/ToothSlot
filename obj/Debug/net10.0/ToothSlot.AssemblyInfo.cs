@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ToothSlot")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+458d1305f60adabcd7ce9b62bc57f1d93d9ec62f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3c5aeb17920cadb45afffe846bd409c0b77d9bb7")]
 [assembly: System.Reflection.AssemblyProductAttribute("ToothSlot")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ToothSlot")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

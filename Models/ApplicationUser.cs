@@ -13,9 +13,6 @@ namespace ToothSlot.Models
         [StringLength(50)]
         public string LastName { get; set; } = string.Empty;
 
-        [Phone]
-        public string? PhoneNumber { get; set; }
-
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? UpdatedAt { get; set; }
