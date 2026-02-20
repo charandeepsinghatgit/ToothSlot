@@ -1,0 +1,39 @@
+@model IEnumerable<ToothSlot.Models.DentalService>
+
+@{
+    ViewData["Title"] = "Dental Services";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Dental Services</h2>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add New Service
+        </a>
+    </div>
+
+    <div class="row">
+        @foreach (var service in Model)
+        {
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@service.Name</h5>
+                        <p class="card-text">@service.Description</p>
+                        <div class="mb-2">
+                            <strong>Price:</strong> $@service.Price.ToString("N2")
+                        </div>
+                        <div class="mb-3">
+                            <strong>Duration:</strong> @service.DurationMinutes minutes
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a asp-action="Edit" asp-route-id="@service.Id" class="btn btn-sm btn-warning">Edit</a>
+                            <a asp-action="Details" asp-route-id="@service.Id" class="btn btn-sm btn-info">Details</a>
+                            <a asp-action="Delete" asp-route-id="@service.Id" class="btn btn-sm btn-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

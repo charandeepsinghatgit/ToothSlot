@@ -1,0 +1,100 @@
+@model IEnumerable<ToothSlot.Models.Appointment>
+
+@{
+    ViewData["Title"] = "My Appointments";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>My Appointments</h2>
+        @if (User.IsInRole("Patient"))
+        {
+            <a asp-action="Book" class="btn btn-primary">
+                <i class="bi bi-calendar-plus"></i> Book New Appointment
+            </a>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <h4>No appointments found</h4>
+            @if (User.IsInRole("Patient"))
+            {
+                <p>You don't have any appointments scheduled. Click the button above to book your first appointment.</p>
+            }
+            else
+            {
+                <p>You don't have any appointments scheduled yet.</p>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Service</th>
+                        @if (User.IsInRole("Patient"))
+                        {
+                            <th>Dentist</th>
+                        }
+                        else
+                        {
+                            <th>Patient</th>
+                        }
+                        <th>Duration</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var appointment in Model)
+                    {
+                        <tr>
+                            <td>@appointment.AppointmentDate.ToString("MMM dd, yyyy")</td>
+                            <td>@appointment.StartTime.ToString(@"hh\:mm")</td>
+                            <td>@appointment.Service.Name</td>
+                            @if (User.IsInRole("Patient"))
+                            {
+                                <td>Dr. @appointment.Dentist.FirstName @appointment.Dentist.LastName</td>
+                            }
+                            else
+                            {
+                                <td>@appointment.Patient.FirstName @appointment.Patient.LastName</td>
+                            }
+                            <td>@appointment.Service.DurationMinutes min</td>
+                            <td>
+                                @if (appointment.Status == "Confirmed")
+                                {
+                                    <span class="badge bg-success">Confirmed</span>
+                                }
+                                else if (appointment.Status == "Pending")
+                                {
+                                    <span class="badge bg-warning">Pending</span>
+                                }
+                                else if (appointment.Status == "Cancelled")
+                                {
+                                    <span class="badge bg-danger">Cancelled</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-info">@appointment.Status</span>
+                                }
+                            </td>
+                            <td>
+                                @if (appointment.Status != "Cancelled" && User.IsInRole("Patient"))
+                                {
+                                    <a asp-action="Cancel" asp-route-id="@appointment.Id" class="btn btn-sm btn-outline-danger">Cancel</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
