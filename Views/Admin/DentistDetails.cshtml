@@ -1,0 +1,83 @@
+@model ToothSlot.ViewModels.DentistDetailsViewModel
+
+@{
+    ViewData["Title"] = "Dentist Details";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-person-badge"></i> Dentist Details
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Name</dt>
+                        <dd class="col-sm-9">Dr. @Model.FirstName @Model.LastName</dd>
+                        
+                        <dt class="col-sm-3">Email</dt>
+                        <dd class="col-sm-9">@Model.Email</dd>
+                        
+                        <dt class="col-sm-3">Phone</dt>
+                        <dd class="col-sm-9">@(Model.PhoneNumber ?? "Not provided")</dd>
+                        
+                        <dt class="col-sm-3">Specialization</dt>
+                        <dd class="col-sm-9">@Model.Specialization</dd>
+                        
+                        <dt class="col-sm-3">Bio</dt>
+                        <dd class="col-sm-9">@(Model.Bio ?? "No bio provided")</dd>
+                        
+                        <dt class="col-sm-3">Status</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </dd>
+                    </dl>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Dentists" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete Dr. @Model.FirstName @Model.LastName?</p>
+                <p class="text-danger"><strong>Warning:</strong> This action cannot be undone. All associated data will be removed.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form asp-action="DeleteDentist" asp-route-id="@Model.Id" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Yes, Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

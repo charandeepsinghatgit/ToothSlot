@@ -1,8 +1,203 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (!User.Identity.IsAuthenticated)
+{
+    <!-- Public Landing Page -->
+    <div class="text-center mt-5">
+        <div class="mb-4">
+            <i class="bi bi-heart-pulse-fill text-primary" style="font-size: 5rem;"></i>
+        </div>
+        <h1 class="display-3 fw-bold mb-3">Welcome to ToothSlot</h1>
+        <p class="lead text-muted mb-5">Modern dental appointment management made simple and efficient</p>
+        
+        <div class="row justify-content-center mt-5">
+            <div class="col-lg-10">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <i class="bi bi-calendar-check-fill text-primary" style="font-size: 3rem;"></i>
+                                <h5 class="card-title mt-3 fw-bold">Easy Booking</h5>
+                                <p class="card-text text-muted">Book appointments 24/7 with your preferred dentist. No phone calls required.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <i class="bi bi-clock-history text-primary" style="font-size: 3rem;"></i>
+                                <h5 class="card-title mt-3 fw-bold">Track History</h5>
+                                <p class="card-text text-muted">View all your past and upcoming appointments in one convenient location.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <i class="bi bi-shield-check-fill text-primary" style="font-size: 3rem;"></i>
+                                <h5 class="card-title mt-3 fw-bold">Secure & Safe</h5>
+                                <p class="card-text text-muted">Your health information is protected with industry-standard encryption.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-5 pt-4">
+            <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary btn-lg px-5 me-3">
+                <i class="bi bi-box-arrow-in-right"></i> Sign In
+            </a>
+            <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-primary btn-lg px-5">
+                <i class="bi bi-person-plus-fill"></i> Register
+            </a>
+        </div>
+        
+        <div class="mt-5 pt-5 border-top">
+            <p class="text-muted"><small><strong>Demo Accounts Available:</strong></small></p>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="alert alert-secondary mb-0">
+                                <strong>Admin</strong><br>
+                                <small>admin@toothslot.com</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="alert alert-secondary mb-0">
+                                <strong>Dentist</strong><br>
+                                <small>dr.smith@toothslot.com</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="alert alert-secondary mb-0">
+                                <strong>Patient</strong><br>
+                                <small>patient@test.com</small>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-muted mt-2"><small>Password for all demo accounts: <code>Password@123</code></small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Logged-in User Dashboards -->
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <h2 class="mb-4">
+                    <i class="bi bi-speedometer2"></i> Admin Dashboard
+                </h2>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h5 class="card-title">
+                            <i class="bi bi-gear-fill text-primary fs-3"></i>
+                            <span class="ms-2">Manage Services</span>
+                        </h5>
+                        <p class="card-text text-muted">Add, edit, or remove dental services offered by the clinic</p>
+                        <a asp-controller="Services" asp-action="Index" class="btn btn-primary mt-2">
+                            <i class="bi bi-arrow-right-circle"></i> Go to Services
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h5 class="card-title">
+                            <i class="bi bi-people-fill text-primary fs-3"></i>
+                            <span class="ms-2">Manage Dentists</span>
+                        </h5>
+                        <p class="card-text text-muted">Add new dentists and manage dentist profiles</p>
+                        <a asp-controller="Admin" asp-action="Dentists" class="btn btn-primary mt-2">
+                            <i class="bi bi-arrow-right-circle"></i> Go to Dentists
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (User.IsInRole("Dentist"))
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <h2 class="mb-4">
+                    <i class="bi bi-calendar-heart"></i> Dentist Dashboard
+                </h2>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm text-center p-4">
+                    <i class="bi bi-calendar-check-fill text-primary" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3">Today's Schedule</h5>
+                    <p class="text-muted">View today's appointments</p>
+                    <a asp-controller="Dentist" asp-action="Dashboard" class="btn btn-primary">
+                        View Schedule
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm text-center p-4">
+                    <i class="bi bi-calendar-week text-primary" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3">Upcoming Week</h5>
+                    <p class="text-muted">Next 7 days of appointments</p>
+                    <a asp-controller="Dentist" asp-action="Upcoming" class="btn btn-primary">
+                        View Week
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    else if (User.IsInRole("Patient"))
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <h2 class="mb-4">
+                    <i class="bi bi-person-circle"></i> Patient Dashboard
+                </h2>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h5 class="card-title">
+                            <i class="bi bi-calendar-plus-fill text-primary fs-3"></i>
+                            <span class="ms-2">Book Appointment</span>
+                        </h5>
+                        <p class="card-text text-muted">Schedule a new dental appointment with your preferred dentist</p>
+                        <a asp-controller="Appointments" asp-action="Book" class="btn btn-primary btn-lg mt-2">
+                            <i class="bi bi-plus-circle"></i> Book Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h5 class="card-title">
+                            <i class="bi bi-calendar3 text-primary fs-3"></i>
+                            <span class="ms-2">My Appointments</span>
+                        </h5>
+                        <p class="card-text text-muted">View and manage your upcoming and past appointments</p>
+                        <a asp-controller="Appointments" asp-action="Index" class="btn btn-primary btn-lg mt-2">
+                            <i class="bi bi-eye"></i> View Appointments
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}

@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using ToothSlot.Data;
 using ToothSlot.Models;
 
@@ -12,164 +11,162 @@ namespace ToothSlot.Controllers
     public class AppointmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AppointmentsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public AppointmentsController(ApplicationDbContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         // GET: Appointments
+        [Authorize(Roles = "Patient,Dentist")]
         public async Task<IActionResult> Index()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             
-            if (User.IsInRole("Patient"))
+            List<Appointment> appointments;
+            
+            if (User.IsInRole("Dentist"))
             {
-                // Show patient's appointments
-                var appointments = await _context.Appointments
-                    .Include(a => a.Service)
-                    .Include(a => a.Dentist)
-                    .Where(a => a.PatientId == user.Id)
-                    .OrderByDescending(a => a.AppointmentDate)
-                    .ToListAsync();
-                
-                return View(appointments);
-            }
-            else if (User.IsInRole("Dentist"))
-            {
-                // Show dentist's appointments
-                var appointments = await _context.Appointments
-                    .Include(a => a.Service)
+                appointments = await _context.Appointments
                     .Include(a => a.Patient)
-                    .Where(a => a.DentistId == user.Id)
-                    .OrderBy(a => a.AppointmentDate)
+                    .Include(a => a.Service)
+                    .Where(a => a.DentistId == userId)
+                    .OrderByDescending(a => a.AppointmentDate)
                     .ThenBy(a => a.StartTime)
                     .ToListAsync();
-                
-                return View("DentistIndex", appointments);
+            }
+            else
+            {
+                appointments = await _context.Appointments
+                    .Include(a => a.Dentist)
+                    .Include(a => a.Service)
+                    .Where(a => a.PatientId == userId)
+                    .OrderByDescending(a => a.AppointmentDate)
+                    .ToListAsync();
             }
             
-            return View(new List<Appointment>());
+            return View(appointments);
         }
 
         // GET: Appointments/Book
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> Book()
         {
-            // Get active services
-            ViewBag.Services = new SelectList(
-                await _context.DentalServices
-                    .Where(s => s.IsActive)
-                    .ToListAsync(), 
-                "Id", "Name");
+            ViewBag.Services = await _context.DentalServices
+                .Where(s => s.IsActive)
+                .ToListAsync();
             
-            // Get dentists (users with Dentist role)
-            var dentists = await _userManager.GetUsersInRoleAsync("Dentist");
-            ViewBag.Dentists = new SelectList(
-                dentists.Select(d => new { 
-                    Id = d.Id, 
-                    Name = $"Dr. {d.FirstName} {d.LastName}" 
-                }), 
-                "Id", "Name");
+            ViewBag.Dentists = await _context.DentistProfiles
+                .Include(d => d.User)
+                .Where(d => d.IsActive)
+                .ToListAsync();
             
-            return View(new Appointment());
+            return View();
         }
 
         // POST: Appointments/Book
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [Authorize(Roles = "Patient")]
-        public async Task<IActionResult> Book(Appointment appointment)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Book(int serviceId, string dentistId, DateTime appointmentDate, TimeSpan startTime, string? notes)
         {
-            var user = await _userManager.GetUserAsync(User);
-            
-            // Set patient ID
-            appointment.PatientId = user.Id;
-            appointment.Status = "Pending";
-            appointment.CreatedAt = DateTime.UtcNow;
-            
-            // Calculate end time based on service duration
-            var service = await _context.DentalServices.FindAsync(appointment.ServiceId);
-            if (service != null)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var service = await _context.DentalServices.FindAsync(serviceId);
+            if (service == null)
             {
-                appointment.EndTime = appointment.StartTime.Add(TimeSpan.FromMinutes(service.DurationMinutes));
+                TempData["Error"] = "Invalid service selected.";
+                return RedirectToAction(nameof(Book));
             }
-            
-            // Check for conflicts (same dentist, overlapping time)
-            var hasConflict = await _context.Appointments
-                .AnyAsync(a => 
-                    a.DentistId == appointment.DentistId &&
-                    a.AppointmentDate == appointment.AppointmentDate &&
-                    a.Status != "Cancelled" &&
-                    ((a.StartTime <= appointment.StartTime && a.EndTime > appointment.StartTime) ||
-                     (a.StartTime < appointment.EndTime && a.EndTime >= appointment.EndTime))
-                );
-            
-            if (hasConflict)
+
+            var endTime = startTime.Add(TimeSpan.FromMinutes(service.DurationMinutes));
+
+            var conflictingAppointment = await _context.Appointments
+                .Where(a => a.DentistId == dentistId &&
+                            a.AppointmentDate.Date == appointmentDate.Date &&
+                            a.Status != "Cancelled" &&
+                            ((a.StartTime < endTime && a.EndTime > startTime)))
+                .FirstOrDefaultAsync();
+
+            if (conflictingAppointment != null)
             {
-                ModelState.AddModelError("", "This time slot is already booked. Please choose another time.");
-                
-                // Reload dropdowns
-                ViewBag.Services = new SelectList(
-                    await _context.DentalServices.Where(s => s.IsActive).ToListAsync(), 
-                    "Id", "Name");
-                
-                var dentists = await _userManager.GetUsersInRoleAsync("Dentist");
-                ViewBag.Dentists = new SelectList(
-                    dentists.Select(d => new { 
-                        Id = d.Id, 
-                        Name = $"Dr. {d.FirstName} {d.LastName}" 
-                    }), 
-                    "Id", "Name");
-                
-                return View(appointment);
+                TempData["Error"] = "This time slot is already booked. Please select a different time.";
+                return RedirectToAction(nameof(Book));
             }
-            
-            _context.Add(appointment);
+
+            var appointment = new Appointment
+            {
+                PatientId = userId,
+                DentistId = dentistId,
+                ServiceId = serviceId,
+                AppointmentDate = appointmentDate,
+                StartTime = startTime,
+                EndTime = endTime,
+                Status = "Pending",
+                Notes = notes,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
-            
+
+            TempData["Success"] = "Appointment booked successfully!";
             return RedirectToAction(nameof(Index));
         }
 
         // GET: Appointments/Cancel/5
         [Authorize(Roles = "Patient")]
-        public async Task<IActionResult> Cancel(int? id)
+        public async Task<IActionResult> Cancel(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var appointment = await _context.Appointments
                 .Include(a => a.Service)
                 .Include(a => a.Dentist)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            
+                .FirstOrDefaultAsync(a => a.Id == id);
+
             if (appointment == null)
             {
                 return NotFound();
             }
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            if (appointment.PatientId != userId)
+            {
+                return Forbid();
+            }
+
             return View(appointment);
         }
 
-        // POST: Appointments/Cancel/5
-        [HttpPost, ActionName("Cancel")]
-        [ValidateAntiForgeryToken]
+        // POST: Appointments/CancelConfirmed
+        [HttpPost]
         [Authorize(Roles = "Patient")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CancelConfirmed(int id)
         {
-            var appointment = await _context.Appointments.FindAsync(id);
-            if (appointment != null)
+            var appointment = await _context.Appointments
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (appointment == null)
             {
-                appointment.Status = "Cancelled";
-                appointment.UpdatedAt = DateTime.UtcNow;
-                _context.Update(appointment);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            if (appointment.PatientId != userId)
+            {
+                return Forbid();
+            }
+
+            appointment.Status = "Cancelled";
+            appointment.UpdatedAt = DateTime.Now;
+
+            _context.Appointments.Update(appointment);
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Appointment cancelled successfully.";
             return RedirectToAction(nameof(Index));
         }
     }

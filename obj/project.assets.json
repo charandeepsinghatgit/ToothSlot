@@ -2597,11 +2597,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/vickysandhu/Downloads/Toothslot/ToothSlot/ToothSlot.csproj",
+      "projectUniqueName": "/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/ToothSlot.csproj",
       "projectName": "ToothSlot",
-      "projectPath": "/Users/vickysandhu/Downloads/Toothslot/ToothSlot/ToothSlot.csproj",
+      "projectPath": "/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/ToothSlot.csproj",
       "packagesPath": "/Users/vickysandhu/.nuget/packages/",
-      "outputPath": "/Users/vickysandhu/Downloads/Toothslot/ToothSlot/obj/",
+      "outputPath": "/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/vickysandhu/.nuget/NuGet/NuGet.Config"

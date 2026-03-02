@@ -19,89 +19,105 @@ build_property.TargetFrameworkIdentifier = .NETCoreApp
 build_property.TargetFrameworkVersion = v10.0
 build_property.RootNamespace = ToothSlot
 build_property.RootNamespace = ToothSlot
-build_property.ProjectDir = /Users/vickysandhu/Downloads/Toothslot/ToothSlot/
+build_property.ProjectDir = /Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = /Users/vickysandhu/Downloads/Toothslot/ToothSlot
+build_property.MSBuildProjectDirectory = /Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Areas/Identity/Pages/_ViewStart.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Areas/Identity/Pages/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/Appointments/Book.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Admin/CreateDentist.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vQ3JlYXRlRGVudGlzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Admin/DentistDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vRGVudGlzdERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Admin/Dentists.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vRGVudGlzdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Appointments/Book.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXBwb2ludG1lbnRzL0Jvb2suY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/Appointments/Cancel.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Appointments/Cancel.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXBwb2ludG1lbnRzL0NhbmNlbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/Appointments/DentistIndex.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Appointments/DentistIndex.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXBwb2ludG1lbnRzL0RlbnRpc3RJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/Appointments/Index.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Appointments/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXBwb2ludG1lbnRzL0luZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/Dentist/Dashboard.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Dentist/Dashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGVudGlzdC9EYXNoYm9hcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/Dentist/Upcoming.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Dentist/Upcoming.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGVudGlzdC9VcGNvbWluZy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/Home/Index.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/Home/Privacy.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9Qcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/Services/Create.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Services/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2VydmljZXMvQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/Services/Delete.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Services/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2VydmljZXMvRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/Services/Edit.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Services/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2VydmljZXMvRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Services/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2VydmljZXMvRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/Services/Index.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Services/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2VydmljZXMvSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/Shared/Error.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0Vycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/Shared/_LoginPartial.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Shared/_LoginPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19Mb2dpblBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/Shared/_ValidationScriptsPartial.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/_ViewImports.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/_ViewStart.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/vickysandhu/Downloads/Toothslot/ToothSlot/Views/Shared/_Layout.cshtml]
+[/Users/vickysandhu/Downloads/Charry/Toothslot/ToothSlot/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-speb54s14x

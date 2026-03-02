@@ -1,0 +1,45 @@
+@model ToothSlot.Models.DentalService
+
+@{
+    ViewData["Title"] = "Service Details";
+}
+
+<div class="container mt-4">
+    <h2>Service Details</h2>
+    <hr />
+    
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Service Name</dt>
+                <dd class="col-sm-9">@Model.Name</dd>
+                
+                <dt class="col-sm-3">Description</dt>
+                <dd class="col-sm-9">@Model.Description</dd>
+                
+                <dt class="col-sm-3">Price</dt>
+                <dd class="col-sm-9">$@Model.Price</dd>
+                
+                <dt class="col-sm-3">Duration</dt>
+                <dd class="col-sm-9">@Model.DurationMinutes minutes</dd>
+                
+                <dt class="col-sm-3">Status</dt>
+                <dd class="col-sm-9">
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactive</span>
+                    }
+                </dd>
+            </dl>
+            
+            <div class="mt-3">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
