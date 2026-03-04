@@ -25,6 +25,13 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+// Auto-create database and run migrations
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
+
 // Auto-assign Patient role to users without roles
 using (var scope = app.Services.CreateScope())
 {
