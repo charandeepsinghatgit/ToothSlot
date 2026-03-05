@@ -75,13 +75,11 @@ using (var scope = app.Services.CreateScope())
         await userManager.CreateAsync(dentist, "Password@123");
         await userManager.AddToRoleAsync(dentist, "Dentist");
         
-        // Create dentist profile
+        // Create dentist profile (only with fields that exist)
         context.DentistProfiles.Add(new DentistProfile
         {
             UserId = dentist.Id,
-            Specialization = "General Dentistry",
-            LicenseNumber = "DEN-12345",
-            YearsOfExperience = 10
+            Specialization = "General Dentistry"
         });
     }
     
