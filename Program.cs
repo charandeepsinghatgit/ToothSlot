@@ -25,11 +25,94 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Auto-create database and run migrations
+// Auto-migrate and seed database
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    
+    // Run migrations
+    context.Database.Migrate();
+    
+    // Seed roles
+    string[] roleNames = { "Admin", "Dentist", "Patient" };
+    foreach (var roleName in roleNames)
+    {
+        if (!await roleManager.RoleExistsAsync(roleName))
+        {
+            await roleManager.CreateAsync(new IdentityRole(roleName));
+        }
+    }
+    
+    // Seed Admin
+    if (await userManager.FindByEmailAsync("admin@toothslot.com") == null)
+    {
+        var admin = new ApplicationUser
+        {
+            UserName = "admin@toothslot.com",
+            Email = "admin@toothslot.com",
+            FirstName = "Admin",
+            LastName = "User",
+            EmailConfirmed = true
+        };
+        await userManager.CreateAsync(admin, "Password@123");
+        await userManager.AddToRoleAsync(admin, "Admin");
+    }
+    
+    // Seed Dentist
+    if (await userManager.FindByEmailAsync("dr.smith@toothslot.com") == null)
+    {
+        var dentist = new ApplicationUser
+        {
+            UserName = "dr.smith@toothslot.com",
+            Email = "dr.smith@toothslot.com",
+            FirstName = "John",
+            LastName = "Smith",
+            EmailConfirmed = true
+        };
+        await userManager.CreateAsync(dentist, "Password@123");
+        await userManager.AddToRoleAsync(dentist, "Dentist");
+        
+        // Create dentist profile
+        context.DentistProfiles.Add(new DentistProfile
+        {
+            UserId = dentist.Id,
+            Specialization = "General Dentistry",
+            LicenseNumber = "DEN-12345",
+            YearsOfExperience = 10
+        });
+    }
+    
+    // Seed Patient
+    if (await userManager.FindByEmailAsync("patient@test.com") == null)
+    {
+        var patient = new ApplicationUser
+        {
+            UserName = "patient@test.com",
+            Email = "patient@test.com",
+            FirstName = "Jane",
+            LastName = "Doe",
+            EmailConfirmed = true
+        };
+        await userManager.CreateAsync(patient, "Password@123");
+        await userManager.AddToRoleAsync(patient, "Patient");
+    }
+    
+    // Seed Services
+    if (!context.DentalServices.Any())
+    {
+        context.DentalServices.AddRange(
+            new DentalService { Name = "General Checkup", Description = "Routine dental examination", Price = 50.00m, DurationMinutes = 30 },
+            new DentalService { Name = "Teeth Cleaning", Description = "Professional teeth cleaning", Price = 75.00m, DurationMinutes = 45 },
+            new DentalService { Name = "Tooth Extraction", Description = "Removal of damaged tooth", Price = 150.00m, DurationMinutes = 60 },
+            new DentalService { Name = "Cavity Filling", Description = "Dental filling procedure", Price = 100.00m, DurationMinutes = 45 },
+            new DentalService { Name = "Root Canal", Description = "Root canal treatment", Price = 500.00m, DurationMinutes = 90 }
+        );
+    }
+    
+    await context.SaveChangesAsync();
 }
 
 // Auto-assign Patient role to users without roles
