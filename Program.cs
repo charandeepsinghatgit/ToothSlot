@@ -75,7 +75,7 @@ using (var scope = app.Services.CreateScope())
         await userManager.CreateAsync(dentist, "Password@123");
         await userManager.AddToRoleAsync(dentist, "Dentist");
         
-        // Create dentist profile (only with fields that exist)
+        // Create dentist profile
         context.DentistProfiles.Add(new DentistProfile
         {
             UserId = dentist.Id,
@@ -113,23 +113,6 @@ using (var scope = app.Services.CreateScope())
     await context.SaveChangesAsync();
 }
 
-// Auto-assign Patient role to users without roles
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-    
-    var allUsers = userManager.Users.ToList();
-    foreach (var user in allUsers)
-    {
-        var roles = await userManager.GetRolesAsync(user);
-        if (!roles.Any())
-        {
-            await userManager.AddToRoleAsync(user, "Patient");
-        }
-    }
-}
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -149,9 +132,38 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
+// ✅ Auto-assign Patient role AND refresh sign-in
+app.Use(async (context, next) =>
+{
+    if (context.User.Identity?.IsAuthenticated == true)
+    {
+        var userManager = context.RequestServices.GetRequiredService<UserManager<ApplicationUser>>();
+        var signInManager = context.RequestServices.GetRequiredService<SignInManager<ApplicationUser>>();
+        var user = await userManager.GetUserAsync(context.User);
+        
+        if (user != null)
+        {
+            var roles = await userManager.GetRolesAsync(user);
+            if (!roles.Any())
+            {
+                await userManager.AddToRoleAsync(user, "Patient");
+                
+                // Refresh sign-in to update claims
+                await signInManager.RefreshSignInAsync(user);
+            }
+        }
+    }
+    
+    await next();
+});
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 app.MapRazorPages();
 
