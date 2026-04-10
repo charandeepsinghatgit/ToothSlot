@@ -19,31 +19,12 @@ namespace ToothSlot.Controllers
         // GET: Services
         public async Task<IActionResult> Index()
         {
+            // ✅ Show ALL services (no filter)
             var services = await _context.DentalServices
-                .Where(s => s.IsActive)
                 .OrderBy(s => s.Name)
                 .ToListAsync();
             
             return View(services);
-        }
-
-        // GET: Services/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var service = await _context.DentalServices
-                .FirstOrDefaultAsync(m => m.Id == id);
-            
-            if (service == null)
-            {
-                return NotFound();
-            }
-
-            return View(service);
         }
 
         // GET: Services/Create
@@ -55,7 +36,7 @@ namespace ToothSlot.Controllers
         // POST: Services/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description,Price,DurationMinutes")] DentalService service)
+        public async Task<IActionResult> Create(DentalService service)
         {
             if (ModelState.IsValid)
             {
@@ -65,6 +46,7 @@ namespace ToothSlot.Controllers
                 _context.Add(service);
                 await _context.SaveChangesAsync();
                 
+                TempData["Success"] = "Service created successfully.";
                 return RedirectToAction(nameof(Index));
             }
             return View(service);
@@ -89,7 +71,7 @@ namespace ToothSlot.Controllers
         // POST: Services/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,DurationMinutes,IsActive")] DentalService service)
+        public async Task<IActionResult> Edit(int id, DentalService service)
         {
             if (id != service.Id)
             {
@@ -103,6 +85,8 @@ namespace ToothSlot.Controllers
                     service.UpdatedAt = DateTime.UtcNow;
                     _context.Update(service);
                     await _context.SaveChangesAsync();
+                    
+                    TempData["Success"] = "Service updated successfully.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -120,40 +104,24 @@ namespace ToothSlot.Controllers
             return View(service);
         }
 
-        // GET: Services/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: Services/ToggleActive/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleActive(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var service = await _context.DentalServices
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var service = await _context.DentalServices.FindAsync(id);
             
             if (service == null)
             {
                 return NotFound();
             }
 
-            return View(service);
-        }
-
-        // POST: Services/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var service = await _context.DentalServices.FindAsync(id);
-            if (service != null)
-            {
-                // Soft delete - just mark as inactive
-                service.IsActive = false;
-                service.UpdatedAt = DateTime.UtcNow;
-                _context.Update(service);
-                await _context.SaveChangesAsync();
-            }
-
+            service.IsActive = !service.IsActive;
+            service.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            
+            TempData["Success"] = $"Service '{service.Name}' {(service.IsActive ? "activated" : "deactivated")} successfully.";
+            
             return RedirectToAction(nameof(Index));
         }
 
