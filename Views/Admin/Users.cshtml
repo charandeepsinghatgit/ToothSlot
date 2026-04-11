@@ -1,0 +1,84 @@
+@model List<ToothSlot.ViewModels.UserRoleViewModel>
+
+@{
+    ViewData["Title"] = "Manage Users & Roles";
+}
+
+<div class="container mt-4">
+    @if(TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle-fill"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    
+    @if(TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle-fill"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <h1><i class="bi bi-people-fill"></i> User & Role Management</h1>
+    <hr />
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Current Role</th>
+                    <th>Change Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    var currentRole = user.Roles.FirstOrDefault() ?? "None";
+                    <tr>
+                        <td>@user.FirstName @user.LastName</td>
+                        <td>@user.Email</td>
+                        <td>
+                            @if (currentRole == "Admin")
+                            {
+                                <span class="badge bg-danger">Admin</span>
+                            }
+                            else if (currentRole == "Dentist")
+                            {
+                                <span class="badge bg-info">Dentist</span>
+                            }
+                            else if (currentRole == "Patient")
+                            {
+                                <span class="badge bg-success">Patient</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">None</span>
+                            }
+                        </td>
+                        <td>
+                            <form asp-action="ChangeRole" method="post" class="d-flex gap-2">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="userId" value="@user.UserId" />
+                                <input type="hidden" name="currentRole" value="@currentRole" />
+                                
+                                <select name="newRole" class="form-select form-select-sm" style="width: 150px;">
+                                    <option value="Patient" selected="@(currentRole == "Patient")">Patient</option>
+                                    <option value="Dentist" selected="@(currentRole == "Dentist")">Dentist</option>
+                                    <option value="Admin" selected="@(currentRole == "Admin")">Admin</option>
+                                </select>
+                                
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-arrow-repeat"></i> Update
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

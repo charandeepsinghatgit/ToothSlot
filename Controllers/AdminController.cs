@@ -6,6 +6,7 @@ using ToothSlot.Data;
 using ToothSlot.Models;
 using ToothSlot.ViewModels;
 
+
 namespace ToothSlot.Controllers
 {
     [Authorize(Roles = "Admin")]
@@ -169,6 +170,136 @@ namespace ToothSlot.Controllers
             }
         
             return RedirectToAction(nameof(Dentists));
+        }
+
+        // GET: Admin/Users
+        public async Task<IActionResult> Users()
+        {
+            var users = await _userManager.Users.ToListAsync();
+
+            var userViewModels = new List<UserRoleViewModel>();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                userViewModels.Add(new UserRoleViewModel
+                {
+                    UserId = user.Id,
+                    Email = user.Email ?? "",
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Roles = roles.ToList()
+                });
+            }
+
+            return View(userViewModels);
+        }
+
+        // POST: Admin/ChangeRole
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeRole(string userId, string currentRole, string newRole)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                TempData["Error"] = "User not found.";
+                return RedirectToAction(nameof(Users));
+            }
+
+            // Remove current role if exists
+            if (!string.IsNullOrEmpty(currentRole))
+            {
+                await _userManager.RemoveFromRoleAsync(user, currentRole);
+            }
+
+            // Add new role
+            await _userManager.AddToRoleAsync(user, newRole);
+
+            TempData["Success"] = $"User {user.Email} role changed to {newRole} successfully.";
+
+            return RedirectToAction(nameof(Users));
+        }
+        // GET: Admin/DentistAvailability/dentistId
+        public async Task<IActionResult> DentistAvailability(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+        
+            var dentist = await _userManager.FindByIdAsync(id);
+            if (dentist == null)
+            {
+                return NotFound();
+            }
+        
+            var availabilities = await _context.DentistAvailabilities
+                .Where(a => a.DentistId == id)
+                .OrderBy(a => a.DayOfWeek)
+                .ThenBy(a => a.StartTime)
+                .ToListAsync();
+        
+            ViewBag.DentistName = $"Dr. {dentist.FirstName} {dentist.LastName}";
+            ViewBag.DentistId = id;
+        
+            return View(availabilities);
+        }
+        
+        // POST: Admin/AddAvailability
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddAvailability(string dentistId, int dayOfWeek, string startTime, string endTime)
+        {
+            if (!TimeSpan.TryParse(startTime, out TimeSpan start) || 
+                !TimeSpan.TryParse(endTime, out TimeSpan end))
+            {
+                TempData["Error"] = "Invalid time format.";
+                return RedirectToAction(nameof(DentistAvailability), new { id = dentistId });
+            }
+        
+            if (start >= end)
+            {
+                TempData["Error"] = "End time must be after start time.";
+                return RedirectToAction(nameof(DentistAvailability), new { id = dentistId });
+            }
+        
+            var availability = new DentistAvailability
+            {
+                DentistId = dentistId,
+                DayOfWeek = dayOfWeek,
+                StartTime = start,
+                EndTime = end,
+                IsAvailable = true,
+                CreatedAt = DateTime.UtcNow
+            };
+        
+            _context.DentistAvailabilities.Add(availability);
+            await _context.SaveChangesAsync();
+        
+            TempData["Success"] = "Availability added successfully.";
+            return RedirectToAction(nameof(DentistAvailability), new { id = dentistId });
+        }
+        
+        // POST: Admin/DeleteAvailability/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAvailability(int id, string dentistId)
+        {
+            var availability = await _context.DentistAvailabilities.FindAsync(id);
+            
+            if (availability == null)
+            {
+                TempData["Error"] = "Availability not found.";
+                return RedirectToAction(nameof(DentistAvailability), new { id = dentistId });
+            }
+        
+            _context.DentistAvailabilities.Remove(availability);
+            await _context.SaveChangesAsync();
+        
+            TempData["Success"] = "Availability deleted successfully.";
+            return RedirectToAction(nameof(DentistAvailability), new { id = dentistId });
         }
     }
 }

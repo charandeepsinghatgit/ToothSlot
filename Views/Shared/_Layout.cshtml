@@ -34,6 +34,11 @@
                                         <i class="bi bi-people-fill"></i> Dentists
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Admin" asp-action="Users">
+                                        <i class="bi bi-person-badge"></i> Users
+                                    </a>
+                                </li>
                             }
                             
                             @if (User.IsInRole("Dentist"))
