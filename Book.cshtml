@@ -1,0 +1,87 @@
+@model ToothSlot.Models.Appointment
+
+@{
+    ViewData["Title"] = "Book Appointment";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Book New Appointment</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Book" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="DentalServiceId" class="form-label">Service</label>
+                            <select asp-for="DentalServiceId" class="form-select" asp-items="@ViewBag.Services" required>
+                                <option value="">-- Select Service --</option>
+                            </select>
+                            <span asp-validation-for="DentalServiceId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DentistProfileId" class="form-label">Dentist</label>
+                            <select asp-for="DentistProfileId" class="form-select" asp-items="@ViewBag.Dentists" required>
+                                <option value="">-- Select Dentist --</option>
+                            </select>
+                            <span asp-validation-for="DentistProfileId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="AppointmentDate" class="form-label">Date</label>
+                            <input asp-for="AppointmentDate" type="date" class="form-control" 
+                                   min="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                            <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="AppointmentTime" class="form-label">Time</label>
+                            <!-- ✅ FIX #2: REPLACE TEXT INPUT WITH DROPDOWN -->
+                            <select asp-for="AppointmentTime" class="form-select" required>
+                                <option value="">-- Select Time --</option>
+                                <option value="09:00">9:00 AM</option>
+                                <option value="09:30">9:30 AM</option>
+                                <option value="10:00">10:00 AM</option>
+                                <option value="10:30">10:30 AM</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="11:30">11:30 AM</option>
+                                <option value="12:00">12:00 PM</option>
+                                <option value="12:30">12:30 PM</option>
+                                <option value="13:00">1:00 PM</option>
+                                <option value="13:30">1:30 PM</option>
+                                <option value="14:00">2:00 PM</option>
+                                <option value="14:30">2:30 PM</option>
+                                <option value="15:00">3:00 PM</option>
+                                <option value="15:30">3:30 PM</option>
+                                <option value="16:00">4:00 PM</option>
+                                <option value="16:30">4:30 PM</option>
+                                <option value="17:00">5:00 PM</option>
+                            </select>
+                            <span asp-validation-for="AppointmentTime" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Notes" class="form-label">Notes (Optional)</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3" 
+                                      placeholder="Any special requests or information for your dentist"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Book Appointment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
