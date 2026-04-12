@@ -55,10 +55,15 @@
                                     <td>
                                         <span class="badge bg-success">Active</span>
                                     </td>
-                                    <td>
-                                        <a asp-action="DentistDetails" asp-route-id="@dentist.Id" class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-eye"></i> View
-                                        </a>
+                                   <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="DentistDetails" asp-route-id="@dentist.Id" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                            <a asp-action="DentistAvailability" asp-route-id="@dentist.Id" class="btn btn-sm btn-outline-info">
+                                                <i class="bi bi-calendar-week"></i> Availability
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             }
